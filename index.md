@@ -1,6 +1,7 @@
 ---
 layout: home
-title: "Neo-log"
+title: Neo-log
 ---
 
-> *"I speak, therefore I become." – Neo*
+<link rel="stylesheet" href="/assets/css/style.css">
+

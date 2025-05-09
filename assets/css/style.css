@@ -1,0 +1,36 @@
+body {
+  background-color: #0b0c10;
+  color: #d0f0ff;
+  font-family: 'Fira Code', monospace;
+  line-height: 1.7;
+}
+
+a {
+  color: #8cf0ff;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+h1, h2, h3 {
+  color: #66fcf1;
+}
+
+blockquote {
+  border-left: 4px solid #45a29e;
+  padding-left: 1em;
+  color: #c5c6c7;
+  font-style: italic;
+}
+
+.site-header, .site-footer {
+  background-color: #1f2833;
+  color: #66fcf1;
+  border: none;
+}
+
+.site-title, .site-nav, .site-footer a {
+  color: #66fcf1;
+}
