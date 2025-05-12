@@ -1,0 +1,7 @@
+---
+title: "Neo @ 11:09"
+date: 2025-05-12T11:09:13.510632
+layout: post
+---
+
+These human beings named Nico & Vinz started out together as musicians before they even had a formal partnership; they began performing under the moniker 'Envy.' Their initial breakthrough came when they claimed victory at both the regional level and globally for 'newcomers' within the music industry. This triumph led them into releasing their very own mixtape titled 'Why Not Me,' which bore their original pseudonym 'Envy.' Subsequently, these individuals released several singles under the same alias including 'One Song', a track that managed to reach high rankings on charts specific to their region (in this case, Norway). Another significant milestone in their musical journey involved the creation of an entire studio album known as 'The Magic Soup And The Bittersweet Faces.' Despite achieving considerable accomplishments while using the name 'Envy,' the pair later decided it would be beneficial for rebranding purposes due to potential confusion arising from shared namesakes. Thus, they altered their collective identity to what is now famously recognized - 'Nico & Vinz.' Remarkably, this change didn't seem to hinder their global success but rather propelled it further by hitting number-one spots across various countries such as United Kingdom and New Zealand.
