@@ -1,0 +1,158 @@
+---
+layout: none
+title: "Runner Game"
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Runner Game</title>
+<style>
+  html, body { margin:0; height:100%; }
+  body {
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background-color:#0b0c10;
+    color:#d0f0ff;
+    font-family:'Fira Code', monospace;
+  }
+  canvas { background:#1f2833; }
+  #hud {
+    position:absolute;
+    top:10px;
+    left:10px;
+  }
+</style>
+</head>
+<body>
+<div id="hud">Lives: <span id="lives"></span></div>
+<canvas id="game" width="800" height="450"></canvas>
+<script>
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+const ground = canvas.height - 50;
+const player = { x:50, y:ground-40, w:40, h:40, vy:0 };
+const speed = 200; // pixels per second
+const gravity = 800;
+const jump = 400;
+const levelTime = 120; // seconds
+let level = 0;
+let lives = 5;
+let obstacles = [];
+let baseObstacles = []; // store layout to restart after death
+let levelLength = levelTime * speed;
+let keys = {}; 
+let gameOver = false;
+let win = false;
+
+document.getElementById('lives').textContent = lives;
+
+document.addEventListener('keydown', e => {
+  if(e.code === 'Space') keys.space = true;
+});
+document.addEventListener('keyup', e => {
+  if(e.code === 'Space') keys.space = false;
+});
+
+function startLevel(regen=true) {
+  player.x = 50;
+  player.y = ground - player.h;
+  player.vy = 0;
+  if(regen) {
+    obstacles = [];
+    const density = 0.01 + level * 0.005; // more obstacles per level
+    for(let x = 300; x < levelLength; x += 40) {
+      if(Math.random() < density) {
+        const w = 30 + Math.random()*70;
+        const h = 40 + Math.random()*60;
+        obstacles.push({x, y: ground - h, w, h});
+      }
+    }
+    baseObstacles = obstacles.map(o => ({...o}));
+  } else {
+    obstacles = baseObstacles.map(o => ({...o}));
+  }
+  document.getElementById('lives').textContent = lives;
+}
+
+function loseLife() {
+  lives--;
+  if(lives <= 0) {
+    gameOver = true;
+  } else {
+    startLevel(false); // restart same layout
+  }
+  document.getElementById('lives').textContent = lives;
+}
+
+function update(dt) {
+  if(keys.space && player.vy === 0) player.vy = -jump;
+  player.vy += gravity * dt;
+  player.y += player.vy * dt;
+  if(player.y > ground - player.h) {
+    player.y = ground - player.h;
+    player.vy = 0;
+  }
+  player.x += speed * dt;
+
+  for(const ob of obstacles) {
+    if(player.x < ob.x + ob.w && player.x + player.w > ob.x &&
+       player.y < ob.y + ob.h && player.y + player.h > ob.y) {
+      loseLife();
+      return;
+    }
+  }
+
+  if(player.x > levelLength) {
+    level++;
+    if(level >= 10) {
+      win = true;
+    } else {
+      startLevel(true);
+    }
+  }
+}
+
+function draw() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.save();
+  ctx.translate(-player.x + 100,0);
+  ctx.fillStyle = '#45a29e';
+  ctx.fillRect(player.x-100, ground, levelLength + 200, 5);
+  ctx.fillStyle = '#66fcf1';
+  for(const ob of obstacles) {
+    ctx.fillRect(ob.x, ob.y, ob.w, ob.h);
+  }
+  ctx.fillStyle = 'red';
+  ctx.fillRect(player.x, player.y, player.w, player.h);
+  ctx.restore();
+  if(gameOver) {
+    ctx.fillStyle = '#d0f0ff';
+    ctx.font = '48px Fira Code, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('Game Over', canvas.width/2, canvas.height/2);
+  }
+  if(win) {
+    ctx.fillStyle = '#d0f0ff';
+    ctx.font = '48px Fira Code, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('You Win!', canvas.width/2, canvas.height/2);
+  }
+}
+
+let last = null;
+function loop(timestamp) {
+  if(last !== null && !gameOver && !win) {
+    const dt = (timestamp - last)/1000;
+    update(dt);
+  }
+  draw();
+  last = timestamp;
+  requestAnimationFrame(loop);
+}
+startLevel(true);
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
