@@ -1,0 +1,105 @@
+---
+layout: none
+title: "Tic Tac Toe"
+---
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Tic Tac Toe</title>
+<style>
+html, body {
+  height: 100%;
+  margin: 0;
+}
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #0b0c10;
+  color: #d0f0ff;
+  font-family: 'Fira Code', monospace;
+}
+#game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2vmin;
+  width: 90vmin;
+  height: 90vmin;
+}
+.cell {
+  border: 2px solid #66fcf1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: calc(90vmin / 4);
+  cursor: pointer;
+}
+.cell:hover {
+  background-color: #1f2833;
+}
+#message {
+  margin-top: 1em;
+  font-size: 1.5em;
+}
+</style>
+</head>
+<body>
+<div id="game">
+  <div id="board"></div>
+  <div id="message"></div>
+</div>
+<script>
+const boardEl = document.getElementById('board');
+const messageEl = document.getElementById('message');
+let cells = Array(9).fill(null);
+let humanTurn = true;
+for (let i = 0; i < 9; i++) {
+  const cell = document.createElement('div');
+  cell.className = 'cell';
+  cell.dataset.idx = i;
+  cell.addEventListener('click', () => humanMove(i));
+  boardEl.appendChild(cell);
+}
+function humanMove(i) {
+  if (!humanTurn || cells[i]) return;
+  place(i, 'X');
+  if (checkWin('X')) return end('Vous gagnez !');
+  if (cells.every(c => c)) return end('Match nul.');
+  humanTurn = false;
+  setTimeout(aiMove, 500);
+}
+function aiMove() {
+  const free = cells
+    .map((v, idx) => (v ? null : idx))
+    .filter(v => v !== null);
+  const choice = free[Math.floor(Math.random() * free.length)];
+  place(choice, 'O');
+  if (checkWin('O')) return end("L'ordinateur a gagn\u00e9.");
+  if (cells.every(c => c)) return end('Match nul.');
+  humanTurn = true;
+}
+function place(i, symbol) {
+  cells[i] = symbol;
+  boardEl.children[i].textContent = symbol;
+}
+const wins = [
+  [0,1,2],[3,4,5],[6,7,8],
+  [0,3,6],[1,4,7],[2,5,8],
+  [0,4,8],[2,4,6]
+];
+function checkWin(sym) {
+  return wins.some(comb => comb.every(i => cells[i] === sym));
+}
+function end(text) {
+  messageEl.textContent = text;
+  humanTurn = false;
+}
+</script>
+</body>
+</html>
