@@ -26,7 +26,7 @@ title: "Runner Game"
 </style>
 </head>
 <body>
-<div id="hud">Lives: <span id="lives"></span></div>
+<div id="hud">Lives: <span id="lives"></span><br>Time: <span id="timer"></span><br>Level: <span id="level"></span></div>
 <canvas id="game" width="800" height="450"></canvas>
 <script>
 const canvas = document.getElementById('game');
@@ -37,6 +37,7 @@ const speed = 200; // pixels per second
 const gravity = 800;
 const jump = 400;
 const levelTime = 120; // seconds
+let timeLeft = levelTime;
 let level = 0;
 let lives = 5;
 let obstacles = [];
@@ -46,7 +47,15 @@ let keys = {};
 let gameOver = false;
 let win = false;
 
+function formatTime(t) {
+  const m = Math.floor(t / 60);
+  const s = Math.max(0, Math.floor(t % 60));
+  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+document.getElementById('timer').textContent = formatTime(timeLeft);
 document.getElementById('lives').textContent = lives;
+document.getElementById('level').textContent = level + 1;
 
 document.addEventListener('keydown', e => {
   if(e.code === 'Space') keys.space = true;
@@ -59,9 +68,10 @@ function startLevel(regen=true) {
   player.x = 50;
   player.y = ground - player.h;
   player.vy = 0;
+  timeLeft = levelTime;
   if(regen) {
     obstacles = [];
-    const density = 0.01 + level * 0.005; // more obstacles per level
+    const density = 0.1 + level * 0.05; // far more obstacles per level
     for(let x = 300; x < levelLength; x += 40) {
       if(Math.random() < density) {
         const w = 30 + Math.random()*70;
@@ -74,6 +84,8 @@ function startLevel(regen=true) {
     obstacles = baseObstacles.map(o => ({...o}));
   }
   document.getElementById('lives').textContent = lives;
+  document.getElementById('timer').textContent = formatTime(timeLeft);
+  document.getElementById('level').textContent = level + 1;
 }
 
 function loseLife() {
@@ -95,6 +107,8 @@ function update(dt) {
     player.vy = 0;
   }
   player.x += speed * dt;
+  timeLeft -= dt;
+  document.getElementById('timer').textContent = formatTime(timeLeft);
 
   for(const ob of obstacles) {
     if(player.x < ob.x + ob.w && player.x + player.w > ob.x &&
@@ -104,13 +118,14 @@ function update(dt) {
     }
   }
 
-  if(player.x > levelLength) {
+  if(timeLeft <= 0 || player.x > levelLength) {
     level++;
     if(level >= 10) {
       win = true;
     } else {
       startLevel(true);
     }
+    document.getElementById('level').textContent = level + 1;
   }
 }
 
