@@ -1,0 +1,16 @@
+# Jekyll build and cache directories
+_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+
+# Log files
+*.log
+
+# OS files
+.DS_Store
+
+# Dependencies
+.bundle/
+node_modules/
+vendor/
